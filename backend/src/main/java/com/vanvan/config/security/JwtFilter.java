@@ -21,7 +21,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final UserRepository userRepository;
-
+    private final JwtService jwtService; 
 
     @Override
     @NullMarked
@@ -31,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
         if (token != null){
 
             try{
-                var email = JwtService.validateAndGetSubject(token);
+                var email = jwtService.validateAndGetSubject(token);
                 UserDetails user = userRepository.findByEmail(email);
 
                 if(user != null){
