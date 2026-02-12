@@ -13,26 +13,28 @@ import java.time.temporal.ChronoUnit;
 public class JwtService {
 
     @Value("${jwt.secret}")
-    private static String SECRET;
-    private static final Algorithm ALGORITHM = Algorithm.HMAC256(SECRET);
+    private String secret;
 
+    private Algorithm getAlgorithm() {
+        return Algorithm.HMAC256(secret);
+    }
 
     /*
      * Gera token usando email
      * **/
-    public static String generateToken(String email) {
+    public String generateToken(String email) {
         return JWT.create()
                 .withSubject(email)
                 .withIssuedAt(Instant.now())
                 .withExpiresAt(Instant.now().plus(2, ChronoUnit.HOURS))
-                .sign(ALGORITHM);
+                .sign(getAlgorithm());
     }
 
     /*
      * Valida token
      * **/
-    public static String validateAndGetSubject(String token) {
-        DecodedJWT decoded = JWT.require(ALGORITHM)
+    public String validateAndGetSubject(String token) {
+        DecodedJWT decoded = JWT.require(getAlgorithm())
                 .build()
                 .verify(token);
 
