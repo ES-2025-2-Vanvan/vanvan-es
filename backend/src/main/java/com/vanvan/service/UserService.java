@@ -1,6 +1,10 @@
 package com.vanvan.service;
 
+import com.vanvan.dto.DriverRegisterRequestDTO;
+import com.vanvan.dto.RegisterDTO;
 import com.vanvan.dto.RegisterRequestDTO;
+import com.vanvan.exception.CnhAlreadyExistsException;
+import com.vanvan.model.Driver;
 import com.vanvan.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,40 +37,68 @@ public class UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    //futuramente haverá algo para "permitir" o registro como admin...
-    //só registra admin e passageiro, pois motorista funciona como um "trabalhe conosco"
-    public User register(RegisterRequestDTO data) {
-        // Verifica se o e-mail já está cadastrado
-        if (userRepository.findByEmail(data.username()) != null) {
-            throw new EmailAlreadyExistsException(data.username());
-        }
-        // Verifica se o CPF já está cadastrado
-        if (userRepository.findByCpf(data.CPF()) != null) {
-            throw new CpfAlreadyExistsException(data.CPF());
-        }
+    public User register(RegisterDTO data) {
 
         var user = convertToUser(data);
-
+        // Verifica se o e-mail já está cadastrado
+        if (userRepository.findByEmail(user.getEmail()) != null) {
+            throw new EmailAlreadyExistsException(user.getName());
+        }
+        // Verifica se o CPF já está cadastrado
+        else if (userRepository.findByCpf(user.getCpf()) != null) {
+            throw new CpfAlreadyExistsException(user.getCpf());
+            //verifica ecnh em caso de driver
+        } else if (user instanceof Driver driver && driverRepository.existsByCnh(driver.getCnh())) {
+            throw new CnhAlreadyExistsException(driver.getCnh());
+        }
         // Criptografa a senha
         String encryptedPassword = passwordEncoder.encode(user.getPassword());
         user.setPassword(encryptedPassword);
 
         // Faz o switch pelo tipo de usuário
-        return switch (data.role()) {
-            case "passenger" -> passengerRepository.save((Passenger) user);
-            case "administrator" -> administratorRepository.save((Administrator) user);
-            default -> throw new IllegalArgumentException("Tipo de usuário inválido.");
+        return switch (user.getRole()) {
+            case PASSENGER -> {
+                assert user instanceof Passenger;
+                yield passengerRepository.save((Passenger) user);
+            }
+            case ADMIN -> {
+                assert user instanceof Administrator;
+                yield administratorRepository.save((Administrator) user);
+            }
+            case DRIVER -> {
+                assert user instanceof Driver;
+                yield driverRepository.save((Driver) user);
+            }
         };
     }
 
-    private User convertToUser(RegisterRequestDTO dto) {
-        return switch (dto.role()) {
-            case "passenger" ->
-                    new Passenger(dto.username(), dto.CPF(), dto.phone(), dto.email(), dto.password());
-            case "administrator" ->
-                    new Administrator(dto.username(), dto.CPF(), dto.phone(), dto.email(), dto.password());
+   /*
+   * Transforma DTO em seu respectivo User
+   * **/
+    private User convertToUser(RegisterDTO dto) {
+        switch (dto.role()) {
+            case "passenger" -> {
+                RegisterRequestDTO p = (RegisterRequestDTO) dto;
+                new Passenger(p.username(), p.CPF(), p.phone(), p.email(), p.password());
+            }
+            case "administrator" -> {
+                RegisterRequestDTO a = (RegisterRequestDTO) dto;
+                new Administrator(a.username(), a.CPF(), a.phone(), a.email(), a.password());
+            }
+            case "driver" -> {
+                DriverRegisterRequestDTO d = (DriverRegisterRequestDTO)  dto;
+                return new Driver(
+                    d.passengerDTO().username(),
+                    d.passengerDTO().CPF(),
+                    d.passengerDTO().phone(),
+                    d.passengerDTO().email(),
+                    d.passengerDTO().password(),
+                    d.cnh(), d.pixKey());
+                }
             default -> throw new IllegalArgumentException("Tipo de usuário inválido.");
-        };
+        }
+        return null;
     }
+
 
 }

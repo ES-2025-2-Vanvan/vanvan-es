@@ -1,10 +1,7 @@
 package com.vanvan.controller;
 
 import com.vanvan.config.security.JwtService;
-import com.vanvan.dto.LoginRequestDTO;
-import com.vanvan.dto.RegisterRequestDTO;
-import com.vanvan.dto.TokenResponseDTO;
-import com.vanvan.dto.UserResponseDTO;
+import com.vanvan.dto.*;
 import com.vanvan.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -25,7 +22,7 @@ public class AuthController {
     private final UserService userService;
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequestDTO data) {
+    public ResponseEntity<?> register(@RequestBody RegisterDTO data) {
         try {
             var user = userService.register(data);
             return ResponseEntity
