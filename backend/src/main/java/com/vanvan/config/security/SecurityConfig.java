@@ -46,6 +46,7 @@ public class SecurityConfig {
                                 "/swagger-ui.html"
                         ).permitAll()
                         .requestMatchers("/h2-console/**").permitAll()//caso venha ser usada essa tool
+                        .requestMatchers("/api/admin/**").hasRole("ADMIN")//so admin pode acessar
                         .anyRequest().authenticated()
                 ).headers(headers -> headers.frameOptions(frame -> frame.disable()))//para o console
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
