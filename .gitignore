@@ -81,3 +81,5 @@ build/
 .DS_Store
 Thumbs.db
 
+frontend/.angular/cache/21.1.2/frontend
+frontend/.angular/cache/21.1.2/frontend/.tsbuildinfo
