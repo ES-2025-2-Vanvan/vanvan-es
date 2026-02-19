@@ -5,7 +5,7 @@
 
     <!-- TÍTULO -->
     <h1 class="text-[64px] font-bold text-[#112B3C]">
-      Motoristas
+        Clientes
     </h1>
 
     <!-- SEARCH + ADD -->
@@ -52,7 +52,7 @@
       </span>
 
       <span class="text-[#112B3C] text-2xl font-bold">
-        Status
+        Telefone
       </span>
 
       <span class="text-[#112B3C] text-2xl font-bold text-center">
@@ -62,41 +62,32 @@
 
     <!-- LINHAS -->
     <div
-      *ngFor="let motorista of motoristas"
+      *ngFor="let client of clientsFiltered"
       class="px-12 py-4 grid grid-cols-[1fr_2fr_1fr_1fr] items-center border-b border-[#646464]/20"
     >
 
       <!-- ID -->
       <span class="text-[#646464] text-2xl font-medium">
-        {{ motorista.id }}
+        {{ client.id }}
       </span>
 
       <!-- Nome -->
       <span class="text-[#646464] text-2xl font-medium">
-        {{ motorista.nome }}
+        {{ client.nome }}
       </span>
 
       <!-- Status -->
-      <div>
-        <span
-          class="px-4 py-1 rounded-full text-sm font-bold"
-          [ngClass]="{
-            'bg-[#DEF8EE] text-[#4AA785]': motorista.status === 'Ativo',
-            'bg-[#E2F5FF] text-[#59A8D4]': motorista.status === 'Em análise',
-            'bg-gray-200 text-gray-500': motorista.status === 'Recusado'
-          }"
-        >
-          {{ motorista.status }}
-        </span>
-      </div>
+      <span class="text-[#646464] text-2xl font-medium">
+        {{ client.telephone }}
+      </span>
 
       <!-- AÇÕES -->
       <div class="flex justify-center gap-8">
-        <button (click)="editar(motorista)">
+        <button (click)="edit(client)">
           <img src="assets/icons/edit.svg" class="w-6 h-6" />
         </button>
 
-        <button (click)="excluir(motorista)">
+        <button (click)="exclude(client)">
           <img src="assets/icons/trash.svg" class="w-6 h-6" />
         </button>
       </div>
@@ -105,4 +96,3 @@
 
   </div>
 
-</div>
