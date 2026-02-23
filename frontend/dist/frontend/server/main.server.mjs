@@ -25,15 +25,13 @@ import {
   AUTO_STYLE,
   AnimationGroupPlayer,
   AnimationMetadataType,
-  Injectable as Injectable2,
   NoopAnimationPlayer,
-  RuntimeError,
+  Toast,
   sequence,
-  setClassMetadata as setClassMetadata2,
   style,
-  ɵPRE_STYLE,
-  ɵɵdefineInjectable as ɵɵdefineInjectable2
-} from "./chunk-NWXKE4EV.mjs";
+  ɵPRE_STYLE
+} from "./chunk-NUSASMO5.mjs";
+import "./chunk-5BS6DABQ.mjs";
 import {
   HTTP_ROOT_INTERCEPTOR_FNS,
   provideHttpClient,
@@ -78,6 +76,7 @@ import {
   RESPONSE_INIT,
   Renderer2,
   RendererFactory2,
+  RuntimeError,
   SSR_CONTENT_INTEGRITY_MARKER,
   Subject,
   TESTABILITY,
@@ -28248,20 +28247,20 @@ var App = class _App {
   static \u0275fac = function App_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _App)();
   };
-  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _App, selectors: [["app-root"]], decls: 1, vars: 0, template: function App_Template(rf, ctx) {
+  static \u0275cmp = /* @__PURE__ */ \u0275\u0275defineComponent({ type: _App, selectors: [["app-root"]], decls: 2, vars: 0, template: function App_Template(rf, ctx) {
     if (rf & 1) {
-      \u0275\u0275element(0, "router-outlet");
+      \u0275\u0275element(0, "router-outlet")(1, "app-toast");
     }
-  }, dependencies: [RouterOutlet], encapsulation: 2 });
+  }, dependencies: [RouterOutlet, Toast], encapsulation: 2 });
 };
 (() => {
   (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(App, [{
     type: Component,
-    args: [{ selector: "app-root", imports: [RouterOutlet], template: "<router-outlet></router-outlet>\n" }]
+    args: [{ selector: "app-root", imports: [RouterOutlet, Toast], template: "<router-outlet></router-outlet>\n<app-toast></app-toast>" }]
   }], null, null);
 })();
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(App, { className: "App", filePath: "src/app/app.ts", lineNumber: 11 });
+  (typeof ngDevMode === "undefined" || ngDevMode) && \u0275setClassDebugInfo(App, { className: "App", filePath: "src/app/app.ts", lineNumber: 12 });
 })();
 
 // src/app/guards/auth.guard.ts
@@ -29077,10 +29076,10 @@ var ClientLayout = class _ClientLayout {
 // src/app/app.routes.ts
 var routes = [
   __spreadValues({ path: "login", loadComponent: () => import("./chunk-PATTKV4B.mjs").then((m) => m.Login) }, true ? { \u0275entryName: "src/app/pages/login/login.ts" } : {}),
-  __spreadValues({ path: "register", loadComponent: () => import("./chunk-XOVUML4R.mjs").then((m) => m.Register) }, true ? { \u0275entryName: "src/app/pages/register/register.ts" } : {}),
+  __spreadValues({ path: "register", loadComponent: () => import("./chunk-VPXWLMPL.mjs").then((m) => m.Register) }, true ? { \u0275entryName: "src/app/pages/register/register.ts" } : {}),
   __spreadValues({ path: "register-driver-1", loadComponent: () => import("./chunk-7MM3HZEA.mjs").then((m) => m.RegisterDriverOne) }, true ? { \u0275entryName: "src/app/pages/register-driver/register-driver-1/register-driver-1.ts" } : {}),
-  __spreadValues({ path: "register-driver-2", loadComponent: () => import("./chunk-LEBJO4UI.mjs").then((m) => m.RegisterDriverTwo) }, true ? { \u0275entryName: "src/app/pages/register-driver/register-driver-2/register-driver-2.ts" } : {}),
-  __spreadValues({ path: "buttons", loadComponent: () => import("./chunk-PAN7QJGF.mjs").then((m) => m.ButtonShowcase) }, true ? { \u0275entryName: "src/app/pages/button-showcase/button-showcase.ts" } : {}),
+  __spreadValues({ path: "register-driver-2", loadComponent: () => import("./chunk-RLMP2ISS.mjs").then((m) => m.RegisterDriverTwo) }, true ? { \u0275entryName: "src/app/pages/register-driver/register-driver-2/register-driver-2.ts" } : {}),
+  __spreadValues({ path: "buttons", loadComponent: () => import("./chunk-E2YI3XCV.mjs").then((m) => m.ButtonShowcase) }, true ? { \u0275entryName: "src/app/pages/button-showcase/button-showcase.ts" } : {}),
   {
     path: "admin",
     component: AdminLayout,
@@ -29088,8 +29087,8 @@ var routes = [
     children: [
       { path: "", redirectTo: "relatorios", pathMatch: "full" },
       __spreadValues({ path: "relatorios", loadComponent: () => import("./chunk-I2NHB6XU.mjs").then((m) => m.Relatorios) }, true ? { \u0275entryName: "src/app/pages/relatorios/relatorios.ts" } : {}),
-      __spreadValues({ path: "motoristas", loadComponent: () => import("./chunk-JSQ2BUOX.mjs").then((m) => m.MotoristasComponent) }, true ? { \u0275entryName: "src/app/pages/motoristas/motoristas.component.ts" } : {}),
-      __spreadValues({ path: "clientes", loadComponent: () => import("./chunk-422LQZZF.mjs").then((m) => m.ClientsList) }, true ? { \u0275entryName: "src/app/pages/clients/clients.ts" } : {}),
+      __spreadValues({ path: "motoristas", loadComponent: () => import("./chunk-Q4U2NI5A.mjs").then((m) => m.MotoristasComponent) }, true ? { \u0275entryName: "src/app/pages/motoristas/motoristas.component.ts" } : {}),
+      //{ path: 'clientes', loadComponent: () => import('./pages/clients/clients').then(m => m.ClientsList)},
       __spreadValues({ path: "aprovar-motoristas", loadComponent: () => import("./chunk-EWOCUVJV.mjs").then((m) => m.ApproveDrivers) }, true ? { \u0275entryName: "src/app/pages/approve-drivers/approve-drivers.ts" } : {})
     ]
   },
@@ -29097,15 +29096,15 @@ var routes = [
     path: "",
     component: ClientLayout,
     children: [
-      __spreadValues({ path: "home", loadComponent: () => import("./chunk-QNM67COW.mjs").then((m) => m.Home) }, true ? { \u0275entryName: "src/app/pages/home/home.ts" } : {}),
-      __spreadValues({ path: "viagens", loadComponent: () => import("./chunk-EUDQT7XX.mjs").then((m) => m.Viagens), canActivate: [authGuard] }, true ? { \u0275entryName: "src/app/pages/viagens/viagens.ts" } : {}),
+      __spreadValues({ path: "home", loadComponent: () => import("./chunk-4R7DYKMY.mjs").then((m) => m.Home) }, true ? { \u0275entryName: "src/app/pages/home/home.ts" } : {}),
+      __spreadValues({ path: "viagens", loadComponent: () => import("./chunk-5JFXLDCT.mjs").then((m) => m.Viagens), canActivate: [authGuard] }, true ? { \u0275entryName: "src/app/pages/viagens/viagens.ts" } : {}),
       __spreadValues({ path: "motorista", loadComponent: () => import("./chunk-BQ5VA5ON.mjs").then((m) => m.MotoristaPage), canActivate: [authGuard, driverApprovedGuard] }, true ? { \u0275entryName: "src/app/pages/motorista-page/motorista-page.ts" } : {})
     ]
   },
   { path: "", redirectTo: "login", pathMatch: "full" }
 ];
 
-// ../node_modules/@angular/animations/fesm2022/_util-chunk.mjs
+// node_modules/@angular/animations/fesm2022/_util-chunk.mjs
 var LINE_START = "\n - ";
 function invalidTimingValue(exp) {
   return new RuntimeError(3e3, ngDevMode && `The provided timing value "${exp}" is invalid.`);
@@ -29520,7 +29519,7 @@ function visitDslNode(visitor, node2, context) {
   }
 }
 
-// ../node_modules/@angular/animations/fesm2022/browser.mjs
+// node_modules/@angular/animations/fesm2022/browser.mjs
 var NoopAnimationDriver = class _NoopAnimationDriver {
   validateStyleProperty(prop) {
     return validateStyleProperty(prop);
@@ -29543,14 +29542,14 @@ var NoopAnimationDriver = class _NoopAnimationDriver {
   static \u0275fac = function NoopAnimationDriver_Factory(__ngFactoryType__) {
     return new (__ngFactoryType__ || _NoopAnimationDriver)();
   };
-  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable2({
+  static \u0275prov = /* @__PURE__ */ \u0275\u0275defineInjectable({
     token: _NoopAnimationDriver,
     factory: _NoopAnimationDriver.\u0275fac
   });
 };
 (() => {
-  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata2(NoopAnimationDriver, [{
-    type: Injectable2
+  (typeof ngDevMode === "undefined" || ngDevMode) && setClassMetadata(NoopAnimationDriver, [{
+    type: Injectable
   }], null, null);
 })();
 var AnimationDriver = class {
@@ -32925,7 +32924,7 @@ export {
 @angular/animations/fesm2022/_util-chunk.mjs:
 @angular/animations/fesm2022/browser.mjs:
   (**
-   * @license Angular v21.1.4
+   * @license Angular v21.1.5
    * (c) 2010-2026 Google LLC. https://angular.dev/
    * License: MIT
    *)

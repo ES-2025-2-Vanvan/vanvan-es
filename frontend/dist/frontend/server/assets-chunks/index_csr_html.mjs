@@ -9,6 +9,6 @@ export default `<!doctype html>
 <link rel="stylesheet" href="styles.css"><link rel="preload" href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&amp;display=swap" as="style"><link rel="preload" href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&amp;display=swap" as="style"></head>
 <body ngcm="">
   <app-root></app-root>
-<link rel="modulepreload" href="chunk-5Z46TIJH.js"><link rel="modulepreload" href="chunk-LTGDCCFF.js"><link rel="modulepreload" href="chunk-MNIE3FOX.js"><link rel="modulepreload" href="chunk-4TXZ7BUV.js"><link rel="modulepreload" href="chunk-NMXCTHWR.js"><link rel="modulepreload" href="chunk-5PZQRLQY.js"><script src="main.js" type="module"></script></body>
+<link rel="modulepreload" href="chunk-5Z46TIJH.js"><link rel="modulepreload" href="chunk-LTGDCCFF.js"><link rel="modulepreload" href="chunk-UUYUKP22.js"><link rel="modulepreload" href="chunk-ADOQVRER.js"><link rel="modulepreload" href="chunk-4TXZ7BUV.js"><link rel="modulepreload" href="chunk-NMXCTHWR.js"><link rel="modulepreload" href="chunk-5PZQRLQY.js"><script src="main.js" type="module"></script></body>
 </html>
 `;

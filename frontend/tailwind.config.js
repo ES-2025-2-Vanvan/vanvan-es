@@ -29,7 +29,7 @@ module.exports = {
           lineHeight: '0.8',
           letterSpacing: '-0.08rem',
           fontWeight: '700',
-        }],        
+        }],
         'header-1': ['4rem', {
           lineHeight: '0.85',
           letterSpacing: '-0.08rem',
@@ -79,7 +79,7 @@ module.exports = {
         }],
         'link-text': ['1rem', {
           lineHeight: 'normal',
-          fontWeight: '700',
+          fontWeight: '500',
           letterSpacing: '0.04rem',
         }],
       },
