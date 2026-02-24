@@ -1,83 +1,111 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
+import { AdminService, DriverAdmin } from '../../services/admin.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { MotoristaDeleteComponent } from './components/motorista-delete/motorista-delete.component';
+import { MotoristaAdd } from './components/motorista-add/motorista-add';
 import { MotoristaEditComponent } from './components/motorista-edit/motorista-edit.component';
 
-interface Motorista {
-  id: number;
-  nome: string;
-  status: 'Ativo' | 'Em análise' | 'Recusado';
-  identidade?: string;
-  cnh?: string;
-  placa?: string;
-  modelo?: string;
-  email?: string;
-  senha?: string;
-  foto?: string;
-}
 
 @Component({
   selector: 'app-motoristas',
   standalone: true,
-  imports: [CommonModule, FormsModule, MotoristaEditComponent],
+  imports: [CommonModule, FormsModule, MotoristaDeleteComponent, MotoristaAdd, MotoristaEditComponent],
   templateUrl: './motoristas.component.html',
 })
-export class MotoristasComponent {
-  filtro = '';
-  motoristas: Motorista[] = [
-    { id: 1, nome: 'João Silva de oleiveira santos da comadre', status: 'Ativo' },
-    { id: 2, nome: 'Maria Oliveira', status: 'Em análise' },
-    { id: 3, nome: 'Carlos Pereira', status: 'Recusado' },
-    { id: 4, nome: 'Ana Souza', status: 'Ativo' },
-    { id: 5, nome: 'Pedro Santos', status: 'Em análise' },
-    { id: 6, nome: 'Luiza Costa', status: 'Recusado' },
-    { id: 7, nome: 'Rafael Lima', status: 'Ativo' },
-    { id: 8, nome: 'Fernanda Alves', status: 'Em análise' },
-    { id: 9, nome: 'Bruno Rodrigues', status: 'Recusado' },
-    { id: 10, nome: 'Carla Mendes', status: 'Ativo' },
-    { id: 11, nome: 'Gustavo Ferreira', status: 'Em análise' },
-    { id: 12, nome: 'Mariana Gomes', status: 'Recusado' },
-    { id: 13, nome: 'Ricardo Barbosa', status: 'Ativo' },
-    { id: 14, nome: 'Aline Ribeiro', status: 'Em análise' },
-    { id: 15, nome: 'Felipe Martins', status: 'Recusado' },
-  ];
+export class MotoristasComponent implements OnInit {
 
-  get motoristasFiltrados(): Motorista[] {
-    return this.motoristas.filter((m) =>
-      m.nome.toLowerCase().includes(this.filtro.toLowerCase()) || m.id.toString().includes(this.filtro)
-    );
+  // --- VARIÁVEIS DE DADOS ---
+  listaMotoristas: DriverAdmin[] = [];
+  motoristasFiltrados = signal<DriverAdmin[]>([]);
+  termoBusca: string = '';
+  carregando = signal(false);
+  erro = signal('');
+
+  // --- CONTROLE DE MODAIS ---
+  modalAdicionarAberto: boolean = false;
+  modalEditarAberto: boolean = false;
+  modalExcluirAberto: boolean = false;
+
+  // --- MOTORISTA SELECIONADO (Para Edição ou Exclusão) ---
+  motoristaSelecionado: DriverAdmin | null = null;
+
+  constructor(private adminService: AdminService) { }
+
+  ngOnInit(): void {
+    this.carregarMotoristas();
   }
 
-  modalAberto = false;
-  motoristaSelecionado: Motorista | null = null;
-
-  editar(motorista:Motorista){
-    console.log('Editar motorista', motorista);
-    this.motoristaSelecionado = { ...motorista }; // cópia
-    this.modalAberto = true;
+  // --- 1. CARREGAR DADOS ---
+  carregarMotoristas(): void {
+    this.carregando.set(true);
+    this.erro.set('');
+    this.adminService.listDrivers(undefined, 0, 100).subscribe({
+      next: (page) => {
+        this.listaMotoristas = page.content;
+        this.filtrarMotoristas();
+        this.carregando.set(false);
+      },
+      error: (err) => {
+        console.error('Erro ao buscar motoristas:', err);
+        this.erro.set('Erro ao carregar motoristas.');
+        this.carregando.set(false);
+      }
+    });
   }
 
-  excluir(motorista:Motorista){
-    console.log('Excluir motorista', motorista);
-    // AQUI ABRE O MODAL DE CONFIRMAÇÃO DE EXCLUSÃO
-  }
-
-  adicionar(){
-    console.log('Adicionar motorista');
-    // AQUI ABRE O MODAL DE ADIÇÃO DE MOTORISTA
-  }
-
-  fecharModal() {
-  this.modalAberto = false;
-  this.motoristaSelecionado = null;
-}
-
-  salvarEdicao(motoristaEditado: Motorista) {
-    const index = this.motoristas.findIndex((m) => m.id === motoristaEditado.id);
-    if (index !== -1) {
-      this.motoristas[index] = motoristaEditado;
+  // --- 2. FILTRO DE BUSCA ---
+  filtrarMotoristas() {
+    if (!this.termoBusca.trim()) {
+      this.motoristasFiltrados.set([...this.listaMotoristas]);
+    } else {
+      const termo = this.termoBusca.toLowerCase();
+      this.motoristasFiltrados.set(
+        this.listaMotoristas.filter(m =>
+          m.name.toLowerCase().includes(termo) ||
+          m.cnh.includes(termo)
+        )
+      );
     }
-    this.fecharModal();
   }
-  
+
+  // --- 3. LÓGICA DO MODAL ADICIONAR ---
+  abrirModalAdicionar() {
+    this.modalAdicionarAberto = true;
+  }
+
+  fecharModalAdicionar(sucesso: boolean) {
+    this.modalAdicionarAberto = false;
+    if (sucesso) {
+      this.carregarMotoristas();
+    }
+  }
+
+  // --- 4. LÓGICA DO MODAL EDITAR ---
+  abrirModalEditar(motorista: DriverAdmin) {
+    this.motoristaSelecionado = { ...motorista };
+    this.modalEditarAberto = true;
+  }
+
+  fecharModalEditar(sucesso: boolean) {
+    this.modalEditarAberto = false;
+    this.motoristaSelecionado = null;
+    if (sucesso) {
+      this.carregarMotoristas();
+    }
+  }
+
+  // --- 5. LÓGICA DO MODAL EXCLUIR ---
+  abrirModalExcluir(motorista: DriverAdmin) {
+    this.motoristaSelecionado = motorista;
+    this.modalExcluirAberto = true;
+  }
+
+  fecharModalExcluir(sucesso: boolean) {
+    this.modalExcluirAberto = false;
+    this.motoristaSelecionado = null;
+    if (sucesso) {
+      this.carregarMotoristas();
+    }
+  }
 }

@@ -1,17 +1,13 @@
-<div class="w-full min-h-screen bg-[#FAFAFA] p-10">
+<div class="w-full h-full bg-[#FAFAFA] p-5">
 
-  <!-- TOPO -->
-  <div class="flex items-center gap-8 mb-8">
+  <div class="flex items-center gap-5 mb-6">
 
-    <!-- TÍTULO -->
-    <h1 class="text-[64px] font-bold text-[#112B3C]">
+    <h1 class="text-text text-header-1 tracking-narrow shrink-0">
       Motoristas
     </h1>
 
-    <!-- SEARCH + ADD -->
-    <div class="flex-1 flex items-center gap-6">
+    <div class="flex-1 flex items-center gap-6 h-14">
 
-      <!-- SEARCH -->
       <div class="flex-1 h-[51px] bg-[#EEEEEF] rounded-full px-6 flex items-center gap-4">
         <img
           src="assets/icons/search-normal.svg"
@@ -21,13 +17,14 @@
         <input
           type="text"
           placeholder="Pesquisar por ID ou Nome"
-          [(ngModel)]="filtro"
+          [(ngModel)]="termoBusca"
+          (input)="filtrarMotoristas()"
           class="bg-transparent outline-none w-full text-[#646464] text-xl"
         />
       </div>
 
-      <!-- BOTÃO + -->
       <button
+        (click)="abrirModalAdicionar()"
         class="w-[45px] h-[45px] bg-[#EEEEEF] rounded-full flex items-center justify-center"
       >
         <span class="text-[32px] text-[#646464] leading-none">+</span>
@@ -36,10 +33,9 @@
     </div>
   </div>
 
-  <!-- CARD TABELA -->
   <div class="bg-[#EEEEEF] rounded-3xl p-6 flex flex-col gap-4">
 
-    <!-- CABEÇALHO -->
+
     <div
       class="bg-white rounded-xl px-12 py-4 grid grid-cols-[1fr_2fr_1fr_1fr] items-center"
     >
@@ -60,43 +56,53 @@
       </span>
     </div>
 
-    <!-- LINHAS -->
+    <!-- Estado de carregamento -->
+    <div *ngIf="carregando()" class="flex justify-center items-center py-10">
+      <span class="text-[#646464] text-lg">Carregando motoristas...</span>
+    </div>
+
+    <!-- Estado de erro -->
+    <div *ngIf="erro() && !carregando()" class="flex justify-center items-center py-10">
+      <span class="text-red-500 font-medium text-base">{{ erro() }}</span>
+    </div>
+
+    <!-- Lista vazia -->
+    <div *ngIf="!carregando() && !erro() && motoristasFiltrados().length === 0" class="flex justify-center items-center py-10">
+      <span class="text-[#646464] text-lg">Nenhum motorista encontrado.</span>
+    </div>
+
     <div
-      *ngFor="let motorista of motoristas"
+      *ngFor="let motorista of motoristasFiltrados()"
       class="px-12 py-4 grid grid-cols-[1fr_2fr_1fr_1fr] items-center border-b border-[#646464]/20"
     >
 
-      <!-- ID -->
-      <span class="text-[#646464] text-2xl font-medium">
+      <span class="text-[#646464] text-2xl font-medium truncate w-40 ">
         {{ motorista.id }}
       </span>
 
-      <!-- Nome -->
       <span class="text-[#646464] text-2xl font-medium">
-        {{ motorista.nome }}
+        {{ motorista.name }}
       </span>
 
-      <!-- Status -->
       <div>
         <span
           class="px-4 py-1 rounded-full text-sm font-bold"
           [ngClass]="{
-            'bg-[#DEF8EE] text-[#4AA785]': motorista.status === 'Ativo',
-            'bg-[#E2F5FF] text-[#59A8D4]': motorista.status === 'Em análise',
-            'bg-gray-200 text-gray-500': motorista.status === 'Recusado'
+            'bg-[#DEF8EE] text-[#4AA785]': motorista.registrationStatus === 'APPROVED',
+            'bg-[#f8f4de] text-[#d4b759]': motorista.registrationStatus === 'PENDING',
+            'bg-[#f8dede] text-[#d45959]': motorista.registrationStatus === 'REJECTED'
           }"
         >
-          {{ motorista.status }}
+          {{ motorista.registrationStatus === 'APPROVED' ? 'Ativo' : motorista.registrationStatus === 'PENDING' ? 'Aguardando' : 'Recusado' }}
         </span>
       </div>
 
-      <!-- AÇÕES -->
       <div class="flex justify-center gap-8">
-        <button (click)="editar(motorista)">
+        <button (click)="abrirModalEditar(motorista)">
           <img src="assets/icons/edit.svg" class="w-6 h-6" />
         </button>
 
-        <button (click)="excluir(motorista)">
+        <button (click)="abrirModalExcluir(motorista)">
           <img src="assets/icons/trash.svg" class="w-6 h-6" />
         </button>
       </div>
@@ -104,10 +110,21 @@
     </div>
 
   </div>
+</div>
+
+<app-motorista-add
+  *ngIf="modalAdicionarAberto"
+  (aoFechar)="fecharModalAdicionar($event)">
+</app-motorista-add>
 
 <app-motorista-edit
-  *ngIf="modalAberto"
+  *ngIf="modalEditarAberto"
   [motorista]="motoristaSelecionado"
-  (aoFechar)="fecharModal()"
-  (aoSalvar)="salvarEdicao($event)">
+  (aoFechar)="fecharModalEditar(true)">
 </app-motorista-edit>
+
+<app-motorista-delete
+  *ngIf="modalExcluirAberto"
+  [motorista]="motoristaSelecionado"
+  (aoFechar)="fecharModalExcluir(true)">
+</app-motorista-delete>

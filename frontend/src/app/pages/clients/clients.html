@@ -1,0 +1,99 @@
+<div class="w-full h-full bg-[#FAFAFA] p-5">
+
+  <!-- TOPO -->
+  <div class="flex items-center gap-8 mb-6">
+
+    <!-- TÍTULO -->
+    <h1 class="text-text text-header-1 tracking-narrow shrink-0">
+        Clientes
+    </h1>
+
+    <!-- SEARCH + ADD -->
+    <div class="flex-1 flex items-center gap-6">
+
+      <!-- SEARCH -->
+      <div class="flex-1 h-[51px] bg-[#EEEEEF] rounded-full px-6 flex items-center gap-4">
+        <img
+          src="assets/icons/search-normal.svg"
+          class="w-5 h-5 opacity-70"
+        />
+
+        <input
+          type="text"
+          placeholder="Pesquisar por ID ou Nome"
+          [(ngModel)]="filtro"
+          class="bg-transparent outline-none w-full text-[#646464] text-xl"
+        />
+      </div>
+
+      <!-- BOTÃO + -->
+      <button
+        class="w-[45px] h-[45px] bg-[#EEEEEF] rounded-full flex items-center justify-center"
+      >
+        <span class="text-[32px] text-[#646464] leading-none">+</span>
+      </button>
+
+    </div>
+  </div>
+
+  <!-- CARD TABELA -->
+  <div class="bg-[#EEEEEF] rounded-3xl p-6 flex flex-col gap-4">
+
+    <!-- CABEÇALHO -->
+    <div
+      class="bg-white rounded-xl px-12 py-4 grid grid-cols-[1fr_2fr_1fr_1fr] items-center"
+    >
+      <span class="text-[#112B3C] text-2xl font-bold">
+        ID
+      </span>
+
+      <span class="text-[#112B3C] text-2xl font-bold">
+        Nome
+      </span>
+
+      <span class="text-[#112B3C] text-2xl font-bold">
+        Telefone
+      </span>
+
+      <span class="text-[#112B3C] text-2xl font-bold text-center">
+        Ações
+      </span>
+    </div>
+
+    <!-- LINHAS -->
+    <div
+      *ngFor="let client of clientsFiltered"
+      class="px-12 py-4 grid grid-cols-[1fr_2fr_1fr_1fr] items-center border-b border-[#646464]/20"
+    >
+
+      <!-- ID -->
+      <span class="text-[#646464] text-2xl font-medium">
+        {{ client.id }}
+      </span>
+
+      <!-- Nome -->
+      <span class="text-[#646464] text-2xl font-medium">
+        {{ client.nome }}
+      </span>
+
+      <!-- Status -->
+      <span class="text-[#646464] text-2xl font-medium">
+        {{ client.telephone }}
+      </span>
+
+      <!-- AÇÕES -->
+      <div class="flex justify-center gap-8">
+        <button (click)="edit(client)">
+          <img src="assets/icons/edit.svg" class="w-6 h-6" />
+        </button>
+
+        <button (click)="exclude(client)">
+          <img src="assets/icons/trash.svg" class="w-6 h-6" />
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
