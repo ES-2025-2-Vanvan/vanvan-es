@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export interface DriverAdmin {
   id: string;
@@ -25,7 +26,10 @@ export interface PageResponse<T> {
   providedIn: 'root',
 })
 export class AdminService {
-  private readonly API_URL = 'http://localhost:8080/api/admin';
+  listClients(undefined: undefined, arg1: number, arg2: number) {
+    throw new Error('Method not implemented.');
+  }
+  private readonly API_URL = `${environment.apiUrl}/api/admin`;
 
   constructor(private http: HttpClient) {}
 
@@ -79,6 +83,7 @@ export class AdminService {
   deleteDriver(driverId: string): Observable<void> {
     return this.http.delete<void>(`${this.API_URL}/drivers/${driverId}`);
   }
+  
 }
 
 

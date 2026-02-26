@@ -7,7 +7,9 @@ import com.vanvan.enums.RegistrationStatus;
 import com.vanvan.enums.UserRole;
 import com.vanvan.exception.UserNotFoundException;
 import com.vanvan.model.Driver;
+import com.vanvan.model.User;
 import com.vanvan.repository.DriverRepository;
+import com.vanvan.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -22,6 +24,7 @@ import java.util.UUID;
 public class AdminService {
 
     private final DriverRepository driverRepository;
+    private final UserRepository userRepository;
 
     public Page<DriverAdminResponseDTO> listDrivers(RegistrationStatus status, Pageable pageable) {
         if (status != null) {
@@ -72,4 +75,35 @@ public class AdminService {
                 .orElseThrow(() -> new UserNotFoundException(UserRole.DRIVER, driverId));
         driverRepository.delete(driver);
     }
+
+    public Page<User> listClients(Pageable pageable) {
+        return userRepository.findByRole(com.vanvan.enums.UserRole.PASSENGER, pageable);
+    }
+
+    public User createClient(User dto) {
+        if (userRepository.existsByEmail(dto.getEmail())) {
+            throw new IllegalArgumentException("Já existe um usuário com este email.");
+        }
+       
+        return userRepository.save(dto);
+    }
+
+    public User updateClient(UUID clientId, User dto) {
+        User user = userRepository.findById(clientId)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
+
+        if (dto.getName() != null && !dto.getName().isBlank()) user.setName(dto.getName());
+        if (dto.getEmail() != null && !dto.getEmail().isBlank()) user.setEmail(dto.getEmail());
+        if (dto.getPhone() != null && !dto.getPhone().isBlank()) user.setPhone(dto.getPhone());
+        
+        return userRepository.save(user);
+    }
+
+    public void deleteClient(UUID clientId) {
+        User user = userRepository.findById(clientId)
+                .orElseThrow(() -> new IllegalArgumentException("Cliente não encontrado."));
+        userRepository.delete(user);
+    }
+
 }
+
