@@ -15,16 +15,22 @@ import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.vanvan.dto.DriverRegisterRequestDTO;
-import com.vanvan.model.Driver;
-import com.vanvan.repository.DriverRepository;
-import com.vanvan.repository.UserRepository; //
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 public class UserServiceTest {
 
-    @Mock
-    private UserRepository userRepository;
+    @InjectMocks private UserService userService;
+
+    @Mock private UserRepository userRepository;
+    @Mock private PassengerRepository passengerRepository;
+    @Mock private DriverRepository driverRepository;
+    @Mock private PasswordEncoder passwordEncoder;
 
     @Mock
     private PasswordEncoder passwordEncoder;
