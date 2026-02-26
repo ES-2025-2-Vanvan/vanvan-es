@@ -22,14 +22,14 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
     @InjectMocks private UserService userService;
-    
+
     @Mock private UserRepository userRepository;
     @Mock private PassengerRepository passengerRepository;
     @Mock private DriverRepository driverRepository;
