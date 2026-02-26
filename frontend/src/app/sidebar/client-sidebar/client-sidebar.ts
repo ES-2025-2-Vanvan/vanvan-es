@@ -23,11 +23,17 @@ export class ClientSidebar implements AfterViewInit {
 
   @ViewChildren('navItem') navItems!: QueryList<ElementRef>;
   sliderStyle = signal({ left: '0px', width: '0px', opacity: '0' });
+  currentUrl = signal(this.router.url);
+
+  isMotoristaPage = computed(() => {
+    return this.currentUrl() === '/motorista';
+  });
 
   constructor() {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
+    ).subscribe((event: any) => {
+       this.currentUrl.set(event.urlAfterRedirects || event.url);
        // Wait for RouterLinkActive to update classes
        setTimeout(() => this.updateSlider(), 50);
     });
