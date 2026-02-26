@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   backend:
-    image: seu-usuario-dockerhub/backend-java:latest
+    image: vanvan/backend-java:latest
     build: ./backend # Caminho para a pasta do Java
     ports:
       - "8080:8080"
@@ -11,10 +11,10 @@ services:
     deploy:
       resources:
         limits:
-          memory: 8G # Vamos alocar bastante RAM já que temos sobrando
+          memory: 8G
 
   frontend:
-    image: pedrovfx/frontend-angular:latest
+    image: vanvan/frontend-angular:latest
     build: ./frontend # Caminho para a pasta do Angular
     ports:
       - "80:80"
