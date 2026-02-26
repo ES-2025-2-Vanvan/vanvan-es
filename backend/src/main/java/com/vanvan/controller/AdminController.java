@@ -16,12 +16,11 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.UUID;
 
-
-
 @RestController
 @RequestMapping("/api/admin")
 @RequiredArgsConstructor
 public class AdminController {
+
     private final AdminService adminService;
 
     @SuppressWarnings("DefaultAnnotationParam")
@@ -59,7 +58,7 @@ public class AdminController {
     }
 
     @PostMapping("/clients")
-    public ResponseEntity<?> createClient(@RequestBody User dto) {
+    public ResponseEntity<Object> createClient(@RequestBody User dto) {
         try {
             return ResponseEntity.ok(adminService.createClient(dto));
         } catch (IllegalArgumentException e) {
@@ -68,7 +67,7 @@ public class AdminController {
     }
 
     @PutMapping("/clients/{id}")
-    public ResponseEntity<?> updateClient(
+    public ResponseEntity<Object> updateClient(
             @PathVariable UUID id,
             @RequestBody User dto) {
         try {
@@ -79,7 +78,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/clients/{id}")
-    public ResponseEntity<?> deleteClient(@PathVariable UUID id) {
+    public ResponseEntity<String> deleteClient(@PathVariable UUID id) {
         try {
             adminService.deleteClient(id);
             return ResponseEntity.noContent().build();
