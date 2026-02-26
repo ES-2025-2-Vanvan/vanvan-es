@@ -10,6 +10,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,10 +28,10 @@ public class SecurityConfig {
     //essa config deixa abertos login e register endpoints [por ora],
     // dentre alguns das tools de desenvolvimento, de resto, somente com autenticação
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtFilter jwtFilter){
         return http
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .csrf(csrf -> csrf.disable())
+                .csrf(AbstractHttpConfigurer::disable)
 
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -48,7 +50,7 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console/**").permitAll()//caso venha ser usada essa tool
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")//so admin pode acessar
                         .anyRequest().authenticated()
-                ).headers(headers -> headers.frameOptions(frame -> frame.disable()))//para o console
+                ).headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))//para o console
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
 
                 .build();
@@ -69,7 +71,7 @@ public class SecurityConfig {
     //beans para auth
     @Bean
     public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration config) throws Exception {
+            AuthenticationConfiguration config) {
         return config.getAuthenticationManager();
     }
 
