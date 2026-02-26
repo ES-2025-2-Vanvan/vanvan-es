@@ -1,6 +1,8 @@
 <div class="w-full flex items-center justify-between relative rounded-[72px] h-[56px] px-2">
     <!-- Logo -->
-    <p class="font-sans text-header-2 relative shrink-0 text-white select-none cursor-pointer h-[56px] flex items-center" [routerLink]="['/home']">
+    <p class="font-sans text-header-2 relative shrink-0 select-none cursor-pointer h-[56px] flex items-center transition-colors duration-300" 
+       [ngClass]="isMotoristaPage() ? 'text-primary' : 'text-white'"
+       [routerLink]="['/home']">
         VanVan
     </p>
 
