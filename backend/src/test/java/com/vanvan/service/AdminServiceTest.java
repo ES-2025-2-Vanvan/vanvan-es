@@ -1,6 +1,7 @@
 package com.vanvan.service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -10,10 +11,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import com.vanvan.dto.DriverAdminResponseDTO;
 import com.vanvan.dto.DriverStatusUpdateDTO;
 import com.vanvan.enums.RegistrationStatus;
+import com.vanvan.exception.UserNotFoundException;
 import com.vanvan.model.Driver;
 import com.vanvan.repository.DriverRepository;
 
@@ -22,6 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -100,6 +107,43 @@ class AdminServiceTest {
         assertNull(motorista.getRejectionReason()); 
         verify(driverRepository, times(1)).save(motorista);
     }
+    @Test
+    @DisplayName("Deve deletar um motorista com sucesso")
+    void deveDeletarMotoristaComSucesso() {
+        UUID id = UUID.randomUUID();
+        Driver driver = new Driver();
 
+        when(driverRepository.findById(id)).thenReturn(Optional.of(driver));
 
+        adminService.deleteDriver(id);
+
+        verify(driverRepository, times(1)).delete(driver);
+    }
+    @Test
+    @DisplayName("Deve lançar exceção quando motorista não existir")
+    void deveLancarExcecaoQuandoMotoristaNaoExistir() {
+        UUID idInexistente = UUID.randomUUID();
+        DriverStatusUpdateDTO dto = new DriverStatusUpdateDTO(RegistrationStatus.APPROVED, null);
+
+        when(driverRepository.findById(idInexistente)).thenReturn(Optional.empty());
+
+        assertThrows(UserNotFoundException.class, () -> {
+            adminService.updateDriverStatus(idInexistente, dto);
+        });
+    }
+    @Test
+    @DisplayName("Deve listar motoristas com paginação")
+    void deveListarMotoristasPaginados() {
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<Driver> page = new PageImpl<>(List.of(new Driver()));
+
+        when(driverRepository.findAll(pageable)).thenReturn(page);
+
+        var resultado = adminService.listDrivers(null, pageable);
+
+        assertNotNull(resultado);
+        verify(driverRepository).findAll(pageable);
+    }
+
+    
 }
