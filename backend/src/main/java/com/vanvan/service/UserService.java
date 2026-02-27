@@ -6,8 +6,7 @@ import com.vanvan.exception.CnhAlreadyExistsException;
 import com.vanvan.exception.UnderageDriverException;
 import com.vanvan.model.Driver;
 import com.vanvan.model.User;
-import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -24,14 +23,13 @@ import java.time.LocalDate;
 import java.time.Period;
 
 @Service
-@NoArgsConstructor
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class UserService {
-    private UserRepository userRepository;
-    private DriverRepository driverRepository;
-    private PassengerRepository passengerRepository;
-    private AdministratorRepository administratorRepository;
-    private PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final DriverRepository driverRepository;
+    private final PassengerRepository passengerRepository;
+    private final AdministratorRepository administratorRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public User register(RegisterDTO data) {
 
