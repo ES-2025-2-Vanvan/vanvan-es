@@ -22,13 +22,14 @@ import com.vanvan.enums.RegistrationStatus;
 import com.vanvan.exception.UserNotFoundException;
 import com.vanvan.model.Driver;
 import com.vanvan.repository.DriverRepository;
+import com.vanvan.repository.UserRepository;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -38,6 +39,10 @@ class AdminServiceTest {
 
     @Mock
     private DriverRepository driverRepository;
+
+    @Mock 
+    private UserRepository userRepository;
+
 
     @InjectMocks
     private AdminService adminService;
@@ -144,6 +149,19 @@ class AdminServiceTest {
         assertNotNull(resultado);
         verify(driverRepository).findAll(pageable);
     }
-
+    @Test
+    @DisplayName("Deve disparar erro quando o email do cliente já existe")
+    void testeEmailClienteDuplicado() {
+    com.vanvan.model.User clienteMock = mock(com.vanvan.model.User.class);
+    String emailTeste = "teste@email.com";
     
+    when(clienteMock.getEmail()).thenReturn(emailTeste);
+    
+    when(userRepository.existsByEmail(emailTeste)).thenReturn(true);
+
+    assertThrows(IllegalArgumentException.class, () -> {
+        adminService.createClient(clienteMock);
+        });
+
+    }
 }
