@@ -42,7 +42,7 @@ class AdminServiceTest {
     private DriverRepository driverRepository;
 
     @Mock
-    private UserRepository UserRepository;
+    private UserRepository userRepository;
 
     @InjectMocks
     private AdminService adminService;
@@ -202,13 +202,13 @@ class AdminServiceTest {
         User user = new Passenger();
         user.setEmail("teste@email.com");
 
-        when(UserRepository.existsByEmail(user.getEmail())).thenReturn(false);
-        when(UserRepository.save(user)).thenReturn(user);
+        when(userRepository.existsByEmail(user.getEmail())).thenReturn(false);
+        when(userRepository.save(user)).thenReturn(user);
 
         var result = adminService.createClient(user);
 
         assertNotNull(result);
-        verify(UserRepository, times(1)).save(user);
+        verify(userRepository, times(1)).save(user);
     }
 
     @Test
@@ -217,7 +217,7 @@ class AdminServiceTest {
         User user = new Passenger();
         user.setEmail("teste@email.com");
 
-        when(UserRepository.existsByEmail(user.getEmail())).thenReturn(true);
+        when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
 
         assertThrows(IllegalArgumentException.class, () -> adminService.createClient(user));
     }
@@ -234,25 +234,25 @@ class AdminServiceTest {
         updatedInfo.setEmail("novo@email.com");
         updatedInfo.setPhone("1234");
 
-        when(UserRepository.findById(id)).thenReturn(Optional.of(existingUser));
-        when(UserRepository.save(any(User.class))).thenReturn(existingUser);
+        when(userRepository.findById(id)).thenReturn(Optional.of(existingUser));
+        when(userRepository.save(any(User.class))).thenReturn(existingUser);
 
         adminService.updateClient(id, updatedInfo);
 
         assertEquals("Novo", existingUser.getName());
         assertEquals("novo@email.com", existingUser.getEmail());
-        verify(UserRepository, times(1)).save(existingUser);
+        verify(userRepository, times(1)).save(existingUser);
     }
 
     @Test
     @DisplayName("Deve excluir cliente com sucesso")
     void deleteClientSuccess() {
         UUID id = UUID.randomUUID();
-        when(UserRepository.findById(id)).thenReturn(Optional.of(new Passenger()));
+        when(userRepository.findById(id)).thenReturn(Optional.of(new Passenger()));
 
         adminService.deleteClient(id);
 
-        verify(UserRepository, times(1)).delete(any(User.class));
+        verify(userRepository, times(1)).delete(any(User.class));
     }
     
 }
