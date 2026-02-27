@@ -2,7 +2,7 @@
 
 <div align="center">
   <!-- Substitua o link abaixo pela URL da sua imagem de logo -->
-  <img src="https://via.placeholder.com/150" alt="Logo VanVan" width="150"/>
+  <img src="frontend/src/assets/logo/LOGO - VANVAN - BLUE.png" alt="Logo VanVan" width="150"/>
   <br>
   <br>
   
@@ -152,6 +152,13 @@ Acesse o projeto através dos links abaixo:
 
 
 O frontend estará acessível em: [http://localhost:4200](http://localhost:4200)
+
+
+## Vídeo demo cadastrando um admin, cadastrando um motorista, aprovando ele e fazendo login como motorista
+
+
+https://github.com/user-attachments/assets/db339dda-d165-41ec-989d-90804b61d3ad
+
 
 
 
