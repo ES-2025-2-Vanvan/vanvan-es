@@ -34,5 +34,8 @@ export const routes: Routes = [
       { path: 'motorista', loadComponent: () => import('./pages/motorista-page/motorista-page').then(m => m.MotoristaPage), canActivate: [authGuard, driverApprovedGuard] },
     ]
   },
-  { path: '', redirectTo: 'login', pathMatch: 'full' }
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'forbidden', loadComponent: () => import('./pages/forbidden/forbidden').then(m => m.Forbidden) },
+  { path: 'unauthorized', loadComponent: () => import('./pages/unauthorized/unauthorized').then(m => m.Unauthorized) },
+  { path: '**', loadComponent: () => import('./pages/not-found/not-found').then(m => m.NotFound) }
 ];
