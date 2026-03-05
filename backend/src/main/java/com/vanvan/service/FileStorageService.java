@@ -2,6 +2,8 @@ package com.vanvan.service;
 
 import com.vanvan.exception.EmptyFileException;
 import com.vanvan.exception.FileStorageException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -18,6 +20,7 @@ public class FileStorageService {
 
     @Value("${file.upload-dir:uploads}")
     private String uploadDir;
+    private static final Logger logger = LoggerFactory.getLogger(FileStorageService.class);
 
     public String storeFile(MultipartFile file, String subDirectory) throws IOException {
         if (file.isEmpty()) {
@@ -55,7 +58,7 @@ public class FileStorageService {
             Files.deleteIfExists(path);
         } catch (IOException e) {
             // Log error but don't fail
-            System.err.println("Erro ao deletar arquivo: " + filePath + " - " + e.getMessage());
+            logger.error("Erro ao apagar arquivo: {}", filePath, e);
         }
     }
 
