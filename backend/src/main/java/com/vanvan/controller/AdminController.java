@@ -26,7 +26,6 @@ public class AdminController {
 
     private final AdminService adminService;
     private final VehicleService vehicleService;
-    private final TripService tripService;
 
     @SuppressWarnings("DefaultAnnotationParam")
     @GetMapping("/drivers")
@@ -110,31 +109,5 @@ public class AdminController {
         return ResponseEntity.ok(vehicleService.getVehicleById(vehicleId));
     }
 
-    @GetMapping("/trips/history")
-    public Page<TripHistoryDTO> listTrips(
-            @RequestParam(required = false) LocalDate startDate,
-            @RequestParam(required = false) LocalDate endDate,
-            @RequestParam(required = false) UUID driverId,
-            @RequestParam(required = false) String departureCity,
-            @RequestParam(required = false) String arrivalCity,
-            @RequestParam(required = false) TripStatus status,
-            Pageable pageable
-    ) {
-
-        return tripService.getTripHistory(
-                startDate,
-                endDate,
-                driverId,
-                departureCity,
-                arrivalCity,
-                status,
-                pageable
-        );
-    }
-
-    @GetMapping("/trips/{id}")
-    public TripDetailsDTO getTripById(@PathVariable Long id) {
-        return tripService.getTripDetails(id);
-    }
 
 }
