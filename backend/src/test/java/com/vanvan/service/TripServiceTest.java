@@ -1,6 +1,5 @@
 package com.vanvan.service;
 
-import com.vanvan.dto.TripDetailsDTO;
 import com.vanvan.dto.TripHistoryDTO;
 import com.vanvan.enums.TripStatus;
 import com.vanvan.exception.TripNotFoundException;
@@ -21,7 +20,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,15 +30,13 @@ class TripServiceTest {
 
     private TripRepository tripRepository;
     private TripService tripService;
-    private DriverRepository driverRepository;
-    private PassengerRepository passengerRepository;
 
     @BeforeEach
     void setUp() {
         tripRepository = mock(TripRepository.class);
-        driverRepository = mock(driverRepository);
-        passengerRepository = mock(passengerRepository);
-        tripService = new TripService(tripRepository, driverRepository,passengerRepository);
+        DriverRepository driverRepository = mock(DriverRepository.class);
+        PassengerRepository passengerRepository = mock(PassengerRepository.class);
+        tripService = new TripService(tripRepository, driverRepository, passengerRepository);
     }
 
 
