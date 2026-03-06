@@ -8,7 +8,8 @@ public enum TripStatus {
 
     CANCELLED("cancelada"),
     IN_PROGRESS("em-andamento"),
-    COMPLETED("finalizada");
+    COMPLETED("finalizada"),
+    SCHEDULED("agendada");
 
     private final String description;
 

@@ -1,6 +1,7 @@
 package com.vanvan.dto;
 
 import com.vanvan.enums.TripStatus;
+import com.vanvan.model.Trip;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,4 +33,27 @@ public class TripDetailsDTO {
     private BigDecimal totalAmount; //valor total arrecadado
 
     private TripStatus status; //status da viagem
+
+    public static TripDetailsDTO fromEntity(Trip trip) {
+
+        List<PassengerDTO> passengerDTOs =
+                trip.getPassengers()
+                        .stream()
+                        .map(p -> new PassengerDTO(
+                                p.getId(),
+                                p.getName()))
+                        .toList();
+
+        return new TripDetailsDTO(
+                trip.getId(),
+                trip.getDate(),
+                trip.getTime(),
+                trip.getDriver().getName(),
+                passengerDTOs,
+                trip.getDeparture().getCity(),
+                trip.getArrival().getCity(),
+                trip.getTotalAmount(),
+                trip.getStatus()
+        );
+    }
 }
