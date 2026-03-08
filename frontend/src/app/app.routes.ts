@@ -39,7 +39,8 @@ export const routes: Routes = [
       { path: 'viagens-motorista', loadComponent: () => import('./pages/viagens-motorista/viagens-motorista').then(m => m.ViagensMotorista), canActivate: [authGuard, driverApprovedGuard] },
       { path: 'ajustar-valores', loadComponent: () => import('./pages/ajustar-valores/ajustar-valores').then(m => m.AjustarValores), canActivate: [authGuard, driverApprovedGuard] },
       { path: 'faturamento', loadComponent: () => import('./pages/faturamento/faturamento').then(m => m.Faturamento), canActivate: [authGuard, driverApprovedGuard] },
-      { path: 'buscar-viagens', loadComponent: () => import('./pages/search-trips/search-trips').then(m => m.SearchTripsComponent) }
+      { path: 'buscar-viagens', loadComponent: () => import('./pages/search-trips/search-trips').then(m => m.SearchTripsComponent) },
+      { path: 'viagem/:id', loadComponent: () => import('./pages/trip-details/trip-details').then(m => m.TripDetails), canActivate: [authGuard] }
     ]
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
