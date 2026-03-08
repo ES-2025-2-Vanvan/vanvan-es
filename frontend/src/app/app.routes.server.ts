@@ -14,6 +14,7 @@ export const serverRoutes: ServerRoute[] = [
   { path: 'viagens', renderMode: RenderMode.Client },
   { path: 'viagem/**', renderMode: RenderMode.Client },
   { path: 'motorista', renderMode: RenderMode.Client },
+  { path: 'driver-status', renderMode: RenderMode.Client },
 
   // Fallback
   { path: '**', renderMode: RenderMode.Prerender }

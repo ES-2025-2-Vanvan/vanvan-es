@@ -28,7 +28,7 @@ export const driverApprovedGuard: CanActivateFn = (route, state) => {
   if (user) {
     // Only restrict drivers — non-drivers can pass
     if (user.role === 'DRIVER' && user.registrationStatus !== 'APPROVED') {
-      return router.createUrlTree(['/home']);
+      return router.createUrlTree(['/driver-status']);
     }
     return true;
   }
@@ -38,7 +38,7 @@ export const driverApprovedGuard: CanActivateFn = (route, state) => {
     map(profile => {
       authService.currentUser.set(profile);
       if (profile.role === 'DRIVER' && profile.registrationStatus !== 'APPROVED') {
-        return router.createUrlTree(['/home']);
+        return router.createUrlTree(['/driver-status']);
       }
       return true;
     }),

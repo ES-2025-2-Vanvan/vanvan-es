@@ -44,6 +44,7 @@ export const routes: Routes = [
     ]
   },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: 'driver-status', loadComponent: () => import('./pages/driver-status/driver-status').then(m => m.DriverStatus), canActivate: [authGuard] },
   { path: 'forbidden', loadComponent: () => import('./pages/forbidden/forbidden').then(m => m.Forbidden) },
   { path: 'unauthorized', loadComponent: () => import('./pages/unauthorized/unauthorized').then(m => m.Unauthorized) },
   { path: '**', loadComponent: () => import('./pages/not-found/not-found').then(m => m.NotFound) }
