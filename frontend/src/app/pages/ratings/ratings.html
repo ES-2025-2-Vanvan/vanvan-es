@@ -1,149 +1,240 @@
-<div class="flex flex-col gap-6 h-full p-5 w-full bg-[#FAFAFA]">
+<div class="flex flex-col gap-5 h-full p-5 w-full bg-white">
 
-  <!-- Header Section -->
-  <div class="flex gap-5 items-center w-full shrink-0">
-    <h1 class="text-text text-header-1 tracking-narrow shrink-0">
-      Avaliações e Feedback
-    </h1>
+  <!-- Header -->
+  <div class="flex items-center justify-between shrink-0">
+    <div class="flex flex-row gap-2 w-full">
+      <h1 class="text-header-1 text-text">Avaliações</h1>
+      <!-- Stats chips -->
 
-    <div class="flex flex-1 items-center gap-4">
-      <!-- Search Input -->
-      <div
-        class="flex flex-1 items-center gap-[6px] h-[51px] bg-white border border-subtle-text/10 rounded-[46px] p-6 py-1 overflow-hidden transition-all focus-within:ring-2 focus-within:ring-primary/30 shadow-sm shadow-black/5">
-        <img src="assets/icons/search-normal.svg" alt="Buscar" class="w-6 h-6 opacity-40" />
-        <input type="text" placeholder="Pesquisar motorista, cliente ou ID da viagem log" [value]="termoBusca()"
-          (input)="onSearch($event)"
-          class="flex-1 w-full bg-transparent text-body text-subtle-text font-['Work_Sans'] focus:outline-none placeholder:text-subtle-text placeholder:opacity-70" />
-      </div>
+      <!-- Toolbar: Search + Filters -->
+      <div class="flex items-center gap-3 w-full">
+        <!-- Search -->
+        <div class="flex flex-1 items-center gap-2 h-[44px] bg-light rounded-full px-4 focus-within:border-accent/60 focus-within:ring-2 focus-within:ring-accent/15 transition-all">
+          <div class="size-4 shrink-0 bg-subtle-text/50"
+               style="-webkit-mask: url(assets/icons/search-normal.svg) no-repeat center / contain; mask: url(assets/icons/search-normal.svg) no-repeat center / contain;"></div>
+          <input type="text"
+                 placeholder="Buscar motorista, cliente ou ID da viagem..."
+                 [value]="termoBusca()"
+                 (input)="onSearch($event)"
+                 class="flex-1 bg-transparent text-small text-text focus:outline-none placeholder:text-subtle-text/60" />
+        </div>
 
-      <!-- Filter Dropdown -->
-      <div
-        class="h-[51px] bg-white border border-subtle-text/10 rounded-[16px] px-4 shadow-sm shadow-black/5 flex items-center shrink-0">
-        <select [ngModel]="statusFiltro()" (ngModelChange)="statusFiltro.set($event); onFilterChange()"
-          class="bg-transparent text-subtle-text font-medium text-[16px] focus:outline-none cursor-pointer">
-          <option value="all">Todas as Avaliações</option>
-          <option value="negative">Negativas (Até 3 estrelas)</option>
-          <option value="unreviewed">Pendentes de Moderação</option>
-        </select>
+
+        <!-- Filter tabs -->
+        <div class="flex items-center gap-1 bg-light rounded-full p-1 w-fit">
+          <button *ngFor="let f of filtros"
+                  (click)="statusFiltro.set(f.value); onFilterChange()"
+                  class="px-4 py-1.5 rounded-full text-small font-bold transition-all duration-200"
+                  [class.bg-dark]="statusFiltro() === f.value"
+                  [class.text-light]="statusFiltro() === f.value"
+                  [class.text-subtle-text]="statusFiltro() !== f.value"
+                  [class.hover:bg-accent/10]="statusFiltro() !== f.value">
+          {{ f.label }}
+          </button>
+        </div>
       </div>
     </div>
+
+
+
+
   </div>
 
-  <!-- Content Section -->
-  <div class="flex flex-1 flex-col gap-[10px] w-full min-h-0">
-    <div
-      class="bg-white flex flex-col items-start p-6 rounded-[24px] w-full flex-1 overflow-hidden shadow-sm shadow-black/5">
+  <!-- Content -->
+  <div class="flex-1 min-h-0 overflow-y-auto pr-1" style="scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.1) transparent;">
 
-      @if (carregando()) {
-      <div class="flex items-center justify-center w-full h-full">
-        <span class="text-subtle-text text-medium animate-pulse">Carregando avaliações...</span>
-      </div>
-      }
-
-      @if (!carregando() && listaAvaliacoes().length === 0) {
-      <div class="flex flex-col items-center justify-center w-full h-full opacity-60">
-        <img src="assets/icons/star.svg" alt="No Ratings" class="w-16 h-16 opacity-30 mb-4 grayscale"
-          style="filter: brightness(0.5);" />
-        <span class="text-subtle-text text-header-3">Nenhuma avaliação encontrada.</span>
-      </div>
-      }
-
-      <div class="w-full flex-1 overflow-y-auto pr-2 custom-scrollbar">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pb-6">
-
-          @for (rating of listaAvaliacoes(); track rating.id) {
-          <!-- Card de Avaliação Exprressivo -->
-          <div
-            class="flex flex-col bg-light border transition-all duration-300 rounded-[20px] p-5 gap-4 relative overflow-hidden group hover:shadow-md hover:-translate-y-1"
-            [ngClass]="{
-                'border-red-200/60 bg-red-50/30': rating.score <= 3 && !rating.reviewed,
-                'border-subtle-text/10': rating.score > 3 || rating.reviewed
-              }">
-
-            <!-- Alerta de Moderação (Score Negativo) -->
-            @if (rating.score <= 3 && !rating.reviewed) { <div
-              class="absolute top-0 right-0 bg-red-500 text-white text-[12px] font-bold px-3 py-1 rounded-bl-[12px] opacity-90 shadow-sm">
-              Requer Atenção
-          </div>
-          }
-
-          <!-- User Info Row -->
-          <div class="flex justify-between items-start mt-1">
-            <div class="flex flex-col gap-1">
-              <span class="text-text text-medium font-semibold leading-tight flex items-center gap-2">
-                <img src="assets/icons/personalcard.svg" class="w-4 h-4 opacity-50" />
-                {{ rating.driverName }}
-              </span>
-              <span class="text-subtle-text text-[14px] leading-tight flex items-center gap-2">
-                <img src="assets/icons/user.svg" class="w-4 h-4 opacity-50" />
-                Cliente: {{ rating.clientName }}
-              </span>
-            </div>
-
-            <div class="flex gap-1" [title]="rating.score + ' Estrelas'">
-              @for (star of getStarsArray(); track star) {
-              <svg class="w-5 h-5 transition-colors"
-                [ngClass]="star <= rating.score ? (rating.score <= 3 ? 'text-red-400' : 'text-primary') : 'text-subtle-text/20'"
-                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 22 20">
-                <path
-                  d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z" />
-              </svg>
-              }
-            </div>
-          </div>
-
-          <!-- Comment Area -->
-          <div class="flex-1 bg-white rounded-[12px] p-4 border border-subtle-text/5 min-h-[90px]">
-            @if (rating.hidden) {
-            <p class="text-subtle-text/70 italic text-[15px] leading-relaxed m-0 flex items-center gap-2">
-              <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                  d="M13.875 18.825A10.05 10.05 0 0 1 12 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 0 1 1.563-3.029m5.858.908a3 3 0 1 1 4.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0 1 12 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 0 1-4.132 5.411m0 0L21 21" />
-              </svg>
-              Comentário ocultado pela moderação.
-            </p>
-            } @else if (rating.comment) {
-            <p class="text-text font-medium text-[15px] leading-relaxed m-0">"{{ rating.comment }}"</p>
-            } @else {
-            <p class="text-subtle-text/50 italic text-[15px] leading-relaxed m-0">Sem comentários.</p>
-            }
-          </div>
-
-          <!-- Action Footer -->
-          <div class="flex justify-between items-center mt-auto pt-2 border-t border-subtle-text/10">
-            <span class="text-[13px] text-subtle-text/80 font-medium">Viagem: {{ rating.tripId }}</span>
-
-            <div class="flex gap-2 relative z-10">
-              @if (!rating.hidden) {
-              <button (click)="ocultarComentario(rating)"
-                class="text-[14px] font-bold text-subtle-text hover:text-red-500 transition-colors px-3 py-1.5 rounded-lg hover:bg-red-50/50"
-                title="Ocultar para usuários">
-                Ocultar
-              </button>
-              }
-
-              @if (!rating.reviewed) {
-              <button (click)="marcarComoAnalisado(rating)"
-                class="text-[14px] font-bold bg-subtle-text/10 text-dark hover:bg-dark hover:text-white transition-all px-4 py-1.5 rounded-lg active:scale-95">
-                ✓ Analisar
-              </button>
-              } @else {
-              <div class="flex items-center gap-1.5 text-[14px] font-bold text-green-600 px-2 py-1.5">
-                <svg class="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                  viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
-                </svg>
-                Analisado
+    <!-- Loading -->
+    @if (carregando()) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        @for (n of [1,2,3,4,5,6]; track n) {
+          <div class="bg-light rounded-[20px] p-5 flex flex-col gap-4 animate-pulse">
+            <div class="flex justify-between">
+              <div class="flex flex-col gap-2">
+                <div class="h-4 w-32 bg-accent/20 rounded-full"></div>
+                <div class="h-3 w-24 bg-accent/10 rounded-full"></div>
               </div>
-              }
+              <div class="flex gap-1">
+                <div *ngFor="let s of [1,2,3,4,5]" class="size-5 rounded-full bg-accent/15"></div>
+              </div>
             </div>
+            <div class="h-20 bg-accent/10 rounded-[12px]"></div>
+            <div class="h-8 bg-accent/10 rounded-full"></div>
           </div>
-
-        </div>
         }
       </div>
+    }
+
+    <!-- Empty -->
+    @if (!carregando() && listaAvaliacoes().length === 0) {
+      <div class="flex flex-col items-center justify-center h-full gap-4 opacity-50">
+        <div class="size-16 bg-subtle-text/30 rounded-full flex items-center justify-center">
+          <div class="size-8 bg-subtle-text"
+               style="-webkit-mask: url(assets/icons/star.svg) no-repeat center / contain; mask: url(assets/icons/star.svg) no-repeat center / contain;"></div>
+        </div>
+        <span class="text-subtitle text-subtle-text">Nenhuma avaliação encontrada</span>
+      </div>
+    }
+
+    <!-- Grid -->
+    @if (!carregando() && listaAvaliacoes().length > 0) {
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
+        @for (rating of listaAvaliacoes(); track rating.id) {
+          <div class="group flex flex-col rounded-[24px] overflow-hidden border transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
+               [class.border-[#d45959]/25]="rating.score <= 3 && !rating.reviewed"
+            [class.border-accent/10]="rating.score > 3 || rating.reviewed">
+
+            <!-- Card top band: colored by score -->
+          <div class="relative flex items-end justify-between px-5 pt-5 pb-4"
+               [class.bg-dark]="rating.score >= 4 && !rating.reviewed"
+               [class.bg-secondary]="rating.reviewed"
+               [class.bg-[#3a1a1a]]="rating.score <= 3 && !rating.reviewed">
+
+            <!-- Score (big) -->
+            <div class="flex flex-col gap-0">
+        <span class="text-[52px] font-extrabold leading-none"
+              [class.text-light]="rating.score >= 4 || rating.reviewed"
+              [class.text-[#d45959]]="rating.score <= 3 && !rating.reviewed"
+              [class.text-white]="rating.score === 3">
+          {{ rating.score }}.0
+        </span>
+              <!-- Stars row -->
+              <div class="flex items-center gap-0.5 mt-1">
+                @for (star of getStarsArray(); track star) {
+                  <svg class="size-4"
+                       [class.text-primary]="star <= rating.score && rating.score >= 4"
+                       [class.text-[#d45959]]="star <= rating.score && rating.score <= 3"
+                       [class.text-secondary]="star <= rating.score && rating.score === 3"
+                       [class.text-white/20]="star > rating.score"
+                    viewBox="0 0 22 20" fill="currentColor">
+                  <path d="M20.924 7.625a1.523 1.523 0 0 0-1.238-1.044l-5.051-.734-2.259-4.577a1.534 1.534 0 0 0-2.752 0L7.365 5.847l-5.051.734A1.535 1.535 0 0 0 1.463 9.2l3.656 3.563-.863 5.031a1.532 1.532 0 0 0 2.226 1.616L11 17.033l4.518 2.375a1.534 1.534 0 0 0 2.226-1.617l-.863-5.03L20.537 9.2a1.523 1.523 0 0 0 .387-1.575Z"/>
+                  </svg>
+                }
+              </div>
+            </div>
+
+            <!-- Right side: badge + trip id -->
+            <div class="flex flex-col items-end gap-2 pb-1">
+              @if (rating.reviewed) {
+                <div class="flex items-center gap-1 bg-success/20 text-success text-[11px] font-bold px-2.5 py-1 rounded-full">
+                  <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                  </svg>
+                  Analisado
+                </div>
+              } @else if (rating.score <= 3) {
+                <div class="flex items-center gap-1 bg-[#d45959]/20 text-[#d45959] text-[11px] font-bold px-2.5 py-1 rounded-full">
+                  <svg class="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                  </svg>
+                  Atenção
+                </div>
+              }
+              <span class="text-white/40 text-[11px] font-medium">#{{ rating.tripId }}</span>
+            </div>
+          </div>
+
+          <!-- Thin score progress bar -->
+          <div class="h-1 w-full bg-accent/10">
+            <div class="h-full transition-all duration-700"
+                 [class.bg-primary]="rating.score >= 4 && !rating.reviewed"
+                 [class.bg-[#d45959]]="rating.score <= 3 && !rating.reviewed"
+                 [class.bg-white/30]="rating.reviewed"
+                 [style.width.%]="(rating.score / 5) * 100">
+            </div>
+          </div>
+
+          <!-- Card body -->
+          <div class="flex flex-col gap-4 p-5 bg-light flex-1">
+
+            <!-- Driver + Client -->
+            <div class="flex flex-col gap-2">
+              <div class="flex items-center gap-2">
+                <div class="size-8 rounded-full bg-accent/15 flex items-center justify-center shrink-0">
+                  <div class="size-4 bg-text/60"
+                       style="-webkit-mask: url(assets/icons/personalcard.svg) no-repeat center / contain; mask: url(assets/icons/personalcard.svg) no-repeat center / contain;"></div>
+                </div>
+                <div class="flex flex-col leading-tight">
+                  <span class="text-bold text-text">{{ rating.driverName }}</span>
+                  <span class="text-[12px] text-subtle-text">Motorista</span>
+                </div>
+              </div>
+              <div class="flex items-center gap-2">
+                <div class="size-8 rounded-full bg-accent/10 flex items-center justify-center shrink-0">
+                  <div class="size-4 bg-subtle-text"
+                       style="-webkit-mask: url(assets/icons/user.svg) no-repeat center / contain; mask: url(assets/icons/user.svg) no-repeat center / contain;"></div>
+                </div>
+                <div class="flex flex-col leading-tight">
+                  <span class="text-bold text-text">{{ rating.clientName }}</span>
+                  <span class="text-[12px] text-subtle-text">Passageiro</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Divider -->
+            <div class="h-[1px] bg-accent/15 w-full"></div>
+
+            <!-- Comment -->
+            <div class="flex-1 relative">
+              @if (rating.hidden) {
+                <div class="flex items-center gap-2 text-subtle-text/50">
+                  <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0 1 12 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 0 1 1.563-3.029m5.858.908a3 3 0 1 1 4.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0 1 12 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 0 1-4.132 5.411m0 0L21 21"/>
+                  </svg>
+                  <span class="text-[13px] italic">Comentário ocultado.</span>
+                </div>
+              } @else if (rating.comment) {
+                <!-- Quote mark decorative -->
+                <span class="text-[48px] leading-none text-accent/20 font-serif absolute -top-3 -left-1 select-none">"</span>
+                <p class="text-[13px] text-text leading-relaxed pl-4 pt-2 m-0">{{ rating.comment }}</p>
+              } @else {
+                <p class="text-[13px] text-subtle-text/40 italic m-0">Sem comentários.</p>
+              }
+            </div>
+
+            <!-- Actions -->
+            <div class="flex items-center justify-between pt-3 border-t border-accent/10 mt-auto">
+              <span class="text-[11px] text-subtle-text/60 font-medium">Viagem #{{ rating.tripId }}</span>
+
+              <div class="flex items-center gap-2">
+                @if (!rating.hidden) {
+                  <button (click)="ocultarComentario(rating)"
+                          class="flex items-center gap-1.5 text-[13px] font-bold text-subtle-text border border-accent/30 hover:border-[#d45959]/50 hover:text-[#d45959] hover:bg-[#d45959]/8 px-4 py-2 rounded-full transition-all active:scale-95">
+                    <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0 1 12 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 0 1 1.563-3.029m5.858.908a3 3 0 1 1 4.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0 1 12 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 0 1-4.132 5.411m0 0L21 21"/>
+                    </svg>
+                    Ocultar
+                  </button>
+                }
+
+                @if (!rating.reviewed) {
+                  <button (click)="marcarComoAnalisado(rating)"
+                          class="flex items-center gap-1.5 text-[13px] font-bold bg-dark text-light border border-dark px-4 py-2 rounded-full hover:opacity-80 transition-all active:scale-95">
+                    <svg class="size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+                    </svg>
+                    Analisar
+                  </button>
+                }
+              </div>
+            </div>
+          </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+  <div class="flex items-center gap-2 w-fit">
+    <div class="flex items-center gap-2 bg-light rounded-full px-4 py-2">
+      <span class="size-2 rounded-full bg-success"></span>
+      <span class="text-small font-bold text-text">{{ totalPositivas() }} positivas</span>
+    </div>
+    <div class="flex items-center gap-2 bg-light rounded-full px-4 py-2">
+      <span class="size-2 rounded-full bg-[#d45959]"></span>
+      <span class="text-small font-bold text-text">{{ totalNegativas() }} negativas</span>
+    </div>
+    <div class="flex items-center gap-2 bg-light rounded-full px-4 py-2">
+      <span class="size-2 rounded-full bg-tetiary"></span>
+      <span class="text-small font-bold text-text">{{ totalPendentes() }} pendentes</span>
     </div>
   </div>
-</div>
 </div>

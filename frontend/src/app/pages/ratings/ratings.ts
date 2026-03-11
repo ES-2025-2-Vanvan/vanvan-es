@@ -1,4 +1,4 @@
-import { Component, OnInit, signal, inject } from '@angular/core';
+import { Component, OnInit, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RatingService, Rating } from '../../services/rating.service';
@@ -21,6 +21,16 @@ export class RatingsComponent implements OnInit {
   // Filtros
   termoBusca = signal('');
   statusFiltro = signal('all');
+
+  filtros = [
+    { label: 'Todas', value: 'all' },
+    { label: 'Negativas', value: 'negative' },
+    { label: 'Pendentes', value: 'unreviewed' },
+  ];
+
+  totalPositivas = computed(() => this.listaAvaliacoes().filter(r => r.score > 3).length);
+  totalNegativas = computed(() => this.listaAvaliacoes().filter(r => r.score <= 3).length);
+  totalPendentes = computed(() => this.listaAvaliacoes().filter(r => !r.reviewed).length);
 
   ngOnInit() {
     this.carregarAvaliacoes();
