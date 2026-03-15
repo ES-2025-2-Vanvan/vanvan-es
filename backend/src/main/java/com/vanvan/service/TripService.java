@@ -17,14 +17,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -40,10 +39,10 @@ public class TripService {
 
     // Mapa de transições permitidas: status atual → set de próximos status válidos
     private static final Map<TripStatus, Set<TripStatus>> ALLOWED_TRANSITIONS = Map.of(
-            TripStatus.SCHEDULED,   Set.of(TripStatus.IN_PROGRESS, TripStatus.CANCELLED),
+            TripStatus.SCHEDULED, Set.of(TripStatus.IN_PROGRESS, TripStatus.CANCELLED),
             TripStatus.IN_PROGRESS, Set.of(TripStatus.COMPLETED),
-            TripStatus.COMPLETED,   Set.of(),
-            TripStatus.CANCELLED,   Set.of()
+            TripStatus.COMPLETED, Set.of(),
+            TripStatus.CANCELLED, Set.of()
     );
 
     public TripDetailsDTO createTrip(CreateTripDTO dto) {
@@ -84,11 +83,9 @@ public class TripService {
 
     /**
      * Calcula o total arrecadado na viagem.
-     *
      * Fórmula:
-     *   pricePerPassenger = max(minimumFare, perKmRate × distanceKm)
-     *   totalAmount       = pricePerPassenger × numberOfPassengers
-     *
+     * pricePerPassenger = max(minimumFare, perKmRate × distanceKm)
+     * totalAmount = pricePerPassenger × numberOfPassengers
      * O motorista pode definir seu próprio perKmRate.
      * Se não definir, usa o perKmRate padrão do Pricing.
      * O minimumFare do Pricing sempre é respeitado como piso mínimo por passageiro.
@@ -109,17 +106,21 @@ public class TripService {
         return pricePerPassenger * dto.getPassengerIds().size();
     }
 
-    /**
-     * Atualiza o status de uma viagem (somente ADMIN).
-     * Valida se a transição é permitida e dispara broadcast imediato via WebSocket.
-     */
     @Transactional
     public TripDetailsDTO updateStatus(Long tripId, TripStatus newStatus) {
         Trip trip = tripRepository.findById(tripId)
                 .orElseThrow(() -> new TripNotFoundException(tripId.toString()));
 
-        TripStatus currentStatus = trip.getStatus();
+        // extrai o driverId do token JWT via SecurityContext
+        UUID driverId = (UUID) Objects.requireNonNull(SecurityContextHolder.getContext()
+                        .getAuthentication())
+                .getPrincipal();
 
+        if (!trip.getDriver().getId().equals(driverId)) {
+            throw new AccessDeniedException("Você não tem permissão para atualizar esta viagem");
+        }
+
+        TripStatus currentStatus = trip.getStatus();
         Set<TripStatus> allowed = ALLOWED_TRANSITIONS.getOrDefault(currentStatus, Set.of());
         if (!allowed.contains(newStatus)) {
             throw new InvalidStatusTransitionException(currentStatus, newStatus);
@@ -127,8 +128,6 @@ public class TripService {
 
         trip.setStatus(newStatus);
         tripRepository.save(trip);
-
-        // broadcast imediato — não espera o @Scheduled de 15s
         broadcastSnapshot();
 
         return TripDetailsDTO.fromEntity(trip);
