@@ -137,7 +137,7 @@ ng serve
 
 Acesse o projeto através dos links abaixo:
 
-🔗 [Frontend](https://vanvan-es-frontend.onrender.com/home)
+🔗 [Frontend](https://vanvan-es.onrender.com/)
 
 🔗 [Backend](https://vanvan-backend.onrender.com/)
 
