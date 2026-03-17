@@ -154,10 +154,12 @@ Acesse o projeto através dos links abaixo:
 O frontend estará acessível em: [http://localhost:4200](http://localhost:4200)
 
 
-## Vídeo demo cadastrando um admin, cadastrando um motorista, aprovando ele e fazendo login como motorista
+## VIDEO DEMO
+Processo no vídeo: Admin aprovando um motorista, motorista ajustando o seu valor de tarifa e criando uma viagem, passageiro comprando passagem na viagem ofertada e avaliando a viagem, admin monitorando a viagem e avaliação
 
 
-https://github.com/user-attachments/assets/db339dda-d165-41ec-989d-90804b61d3ad
+https://github.com/user-attachments/assets/d10b8089-aa9c-48ea-adcb-f6f9f381544b
+
 
 
 
