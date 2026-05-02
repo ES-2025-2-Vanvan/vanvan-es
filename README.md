@@ -153,6 +153,12 @@ Acesse o projeto através dos links abaixo:
 
 O frontend estará acessível em: [http://localhost:4200](http://localhost:4200)
 
+## PREVIEW
+<img width="1546" height="923" alt="image" src="https://github.com/user-attachments/assets/531fcbbc-9286-4559-a81c-318c24d666d1" />
+<br>
+<img width="1550" height="925" alt="image" src="https://github.com/user-attachments/assets/b3595a65-2b1b-4c0e-83da-0b3e2f6beeb7" />
+
+
 
 ## VIDEO DEMO
 Processo no vídeo: Admin aprovando um motorista, motorista ajustando o seu valor de tarifa e criando uma viagem, passageiro comprando passagem na viagem ofertada e avaliando a viagem, admin monitorando a viagem e avaliação
