@@ -154,9 +154,10 @@ Acesse o projeto através dos links abaixo:
 O frontend estará acessível em: [http://localhost:4200](http://localhost:4200)
 
 ## PREVIEW
-<img width="1546" height="923" alt="image" src="https://github.com/user-attachments/assets/531fcbbc-9286-4559-a81c-318c24d666d1" />
-<br>
-<img width="1550" height="925" alt="image" src="https://github.com/user-attachments/assets/b3595a65-2b1b-4c0e-83da-0b3e2f6beeb7" />
+<img width="1280" height="639" alt="2026-05-0814-28-34-00 00 05 539-00 00 11 196-ezgif com-video-to-gif-converter" src="https://github.com/user-attachments/assets/30b6586d-007a-49fc-a7f8-984fe90ae43a" />
+
+
+<img width="4192" height="3060" alt="Frame 322(2)" src="https://github.com/user-attachments/assets/a5591635-eb37-42c2-a71b-78c1de26976d" />
 
 
 
